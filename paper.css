@@ -1,0 +1,64 @@
+/* Each leaf is a projection of the same 3D sheet. Paper and clinical marks share one surface. */
+.trifold-paper {
+  position: relative;
+  display: block;
+  min-width: 0;
+  isolation: isolate;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: pan-y pinch-zoom;
+  cursor: grab;
+}
+.trifold-paper:focus-visible { outline: 2px solid #26786e; outline-offset: -3px; }
+.trifold-paper.is-pulling { cursor: grabbing; }
+.trifold-paper .fp-floor,
+.trifold-paper .fp-scene,
+.trifold-paper .fp-profiles {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none;
+}
+.trifold-paper .fp-floor { z-index: 0; overflow: visible; }
+.trifold-paper .fp-scene { z-index: 1; }
+.trifold-paper .fp-profiles { z-index: 2; }
+.trifold-paper .fp-leaf {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+  -webkit-transform-origin: 0 0;
+  background: #f9faf8;
+  overflow: hidden;
+  pointer-events: none;
+}
+.trifold-paper .fp-print,
+.trifold-paper .fp-light,
+.trifold-paper .fp-cast,
+.trifold-paper .fp-creases {
+  position: absolute;
+  display: block;
+  width: 100%;
+  height: 100%;
+  inset: 0;
+  pointer-events: none;
+}
+.trifold-paper .fp-print {
+  max-width: none;
+  max-height: none;
+  object-fit: fill;
+}
+.trifold-paper .fp-print[hidden] { display: none; }
+.trifold-paper .fp-print.fp-verso { transform: scaleX(-1); }
+.trifold-paper .fp-light { background: #293033; }
+.trifold-paper .fp-cast { overflow: hidden; }
+.trifold-paper .fp-creases {
+  background: linear-gradient(90deg,
+    rgba(44, 40, 35, var(--fold-left,0)), transparent 3.7%,
+    transparent 96.3%, rgba(44, 40, 35, var(--fold-right,0)));
+  box-shadow: inset 0 0 0 .42px rgba(102,105,99,.28);
+}

@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#edece6">
+<meta name="robots" content="noindex,nofollow">
+<title>肿瘤治疗导航图 · 三折页</title>
+<link rel="icon" href="mark.svg" type="image/svg+xml">
+<link rel="preload" as="image" href="assets/front-1.webp">
+<link rel="stylesheet" href="viewer.css">
+<link rel="stylesheet" href="paper.css">
+<script src="physics.js" defer></script>
+<script src="viewer.js" defer></script>
+</head>
+<body>
+<svg class="symbols" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><defs>
+<symbol id="i-book" viewBox="0 0 24 24"><path d="M3 4.8c3-1.1 5.9-.6 9 1.1 3.1-1.7 6-2.2 9-1.1v14c-3-1.1-5.9-.6-9 1.1-3.1-1.7-6-2.2-9-1.1zM12 6v13"/></symbol>
+<symbol id="i-turn" viewBox="0 0 24 24"><path d="M9 5.5l6-2v15l-6 2zM6 8c-2.4.8-3.8 2-3.8 3.4 0 2.2 4.4 3.9 9.8 3.9 5.4 0 9.8-1.7 9.8-3.9 0-.9-.6-1.7-1.9-2.4M17.5 7.5l2.9 1.2-.8 2.8"/></symbol>
+<symbol id="i-prev" viewBox="0 0 24 24"><path d="m14 6-6 6 6 6"/></symbol>
+<symbol id="i-next" viewBox="0 0 24 24"><path d="m10 6 6 6-6 6"/></symbol>
+<symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+<symbol id="i-plus" viewBox="0 0 24 24"><path d="M5 12h14M12 5v14"/></symbol>
+<symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+</defs></svg>
+<main class="studio" id="studio">
+<header class="mast"><div class="brand"><img src="mark.svg" width="30" height="30" alt=""><h1>肿瘤治疗导航图</h1></div>
+<button type="button" id="read" class="read-link" aria-haspopup="dialog"><svg><use href="#i-book"/></svg>逐页阅读</button></header>
+<section class="exhibit" aria-label="交互三折页">
+<div id="paper" aria-label="折页模型，左右拖动可展开或收起，轻点折面可放大"></div>
+<noscript><div class="no-js"><img src="assets/front-1.webp" alt="肿瘤治疗导航图封面"><p>请开启 JavaScript 体验折叠，或直接打开图稿。</p><a href="assets/back-2-hd.webp">肺癌病例</a> · <a href="assets/back-3-hd.webp">胰腺癌病例</a></div></noscript>
+</section>
+<footer class="control-area">
+<div class="control-tray" aria-label="折页操作"><div class="fold-steps" role="group" aria-label="开合程度">
+<button type="button" data-step="0" aria-pressed="true">合上</button>
+<button type="button" data-step="1" aria-pressed="false">半展开</button>
+<button type="button" data-step="2" aria-pressed="false">全展开</button></div>
+<i class="sep" aria-hidden="true"></i><button type="button" id="flip"><svg><use href="#i-turn"/></svg>翻面</button></div>
+<p class="hint" id="hint">左右拖动可开合，轻点纸面可放大</p>
+<span id="announce" class="sr-only" aria-live="polite"></span>
+</footer>
+</main>
+<dialog id="reader" aria-labelledby="reader-title">
+<div class="reading-room">
+<header class="reader-header"><button type="button" id="exit-reader" class="return"><svg><use href="#i-prev"/></svg>返回折页</button><h2 id="reader-title">封面</h2><span class="counter" id="count">1 / 5</span></header>
+<div class="reader-viewport" id="reader-viewport" tabindex="0" aria-label="查看图稿，可双指缩放或拖动"><div class="page-images" id="page-images"></div></div>
+<nav class="reader-tools" aria-label="读图操作">
+<button type="button" id="prev" aria-label="上一页"><svg><use href="#i-prev"/></svg><span>上一页</span></button>
+<div class="zoom-tools"><button type="button" id="smaller" aria-label="缩小"><svg><use href="#i-minus"/></svg></button><button type="button" id="zoom" title="恢复适合页面大小">100%</button><button type="button" id="larger" aria-label="放大"><svg><use href="#i-plus"/></svg></button></div>
+<button type="button" id="next" aria-label="下一页"><span>下一页</span><svg><use href="#i-next"/></svg></button>
+</nav>
+</div></dialog>
+</body></html>
