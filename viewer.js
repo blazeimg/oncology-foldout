@@ -15,6 +15,7 @@
   ];
   const reader = byId('reader'), viewport = byId('reader-viewport'), images = byId('page-images');
   const stepButtons = Array.from(document.querySelectorAll('[data-step]'));
+  let overviewFit = false;
   let foldState = {side:'front',step:0,moving:false};
   let pageIndex = 0, magnification = 1, baseWidth = 1, fitWidth = 1;
   let lastFocus, layoutFrame, lastStamp = 0, lastPoint = null;
@@ -41,6 +42,7 @@
     const heightFit=availableH*panelRatio;
     fitWidth=Math.min(availableW/count,heightFit);
     baseWidth=viewport.clientWidth<650 ? Math.min(availableW,heightFit) : fitWidth;
+    if (overviewFit && pageIndex === 1) magnification = minZoom();
     const w=baseWidth*count*magnification, h=baseWidth*magnification/panelRatio;
     images.style.width=w+'px';images.style.height=h+'px';
     images.style.setProperty('--top',Math.max(10,(viewport.clientHeight-h)/2)+'px');
@@ -50,6 +52,7 @@
   }
   function minZoom(){return Math.min(1,fitWidth/baseWidth);}
   function layoutAround(value,cx,cy) {
+    overviewFit = false;
     const rect=images.getBoundingClientRect();
     const fx=(cx-rect.left)/rect.width, fy=(cy-rect.top)/rect.height;
     magnification=clamp(value,minZoom(),4);layout();
@@ -62,6 +65,7 @@
     layoutAround(magnification*factor,b.left+b.width/2,b.top+b.height/2);
   }
   function showPage(index, part=0) {
+    overviewFit = false;
     pageIndex=clamp(index,0,pages.length-1);magnification=1;resetPointers();
     const page=pages[pageIndex];byId('reader-title').textContent=page.title;
     byId('count').textContent=(pageIndex+1)+' / '+pages.length;
@@ -84,6 +88,7 @@
   }
   function openMap() {
     openReader(1);
+    overviewFit = true;
     magnification = minZoom();
     layout();
     viewport.scrollTo(0,0);
@@ -103,6 +108,12 @@
       openReader(foldState.step === 0 ? 4 : 2);
     }
   });
+  if ('ResizeObserver' in window) {
+    const readerSize = new ResizeObserver(() => {
+      if (reader.open) layout();
+    });
+    readerSize.observe(viewport);
+  }
   if (mapEntry) openMap();
   byId('exit-reader').onclick=()=>reader.close();
   reader.addEventListener('close',()=>{
