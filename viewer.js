@@ -1,6 +1,11 @@
 (() => {
   'use strict';
   const byId = id => document.getElementById(id);
+  const edition = document.documentElement.dataset.edition;
+  const mapEntry = new URLSearchParams(location.search).get('view') === 'map';
+  function panelSrc(id, highResolution = false) {
+    return 'assets/' + id + (highResolution ? '-hd' : '') + '.webp?v=' + encodeURIComponent(edition);
+  }
   const pages = [
     {title: '封面', panels: ['front-1']},
     {title: '治疗导航地图', panels: ['front-2','front-3']},
@@ -21,6 +26,7 @@
 
   function syncFold(next) {
     foldState = next;
+    byId('read-label').textContent = next.side === 'front' ? '查看内页' : '逐页阅读';
     stepButtons.forEach((b,i) => b.setAttribute('aria-pressed',String(i===next.step)));
     if (!next.moving) {
       const description = stageNames[next.step]+'，'+(next.side==='front'?'正面':'背面');
@@ -62,9 +68,9 @@
     byId('prev').disabled=pageIndex===0;byId('next').disabled=pageIndex===pages.length-1;
     const fragments=page.panels.map((id,i)=>{
       const img=new Image();img.alt=page.title+(page.panels.length>1?(i?'右半幅':'左半幅'):'');
-      img.src='assets/'+id+'.webp';img.draggable=false;
+      img.src=panelSrc(id);img.draggable=false;
       const hd=new Image();
-      hd.onload=()=>{if(img.isConnected)img.src=hd.src};hd.src='assets/'+id+'-hd.webp';
+      hd.onload=()=>{if(img.isConnected)img.src=hd.src};hd.src=panelSrc(id,true);
       return img;
     });
     images.replaceChildren(...fragments);layout();
@@ -76,18 +82,28 @@
     showPage(index,part);
     byId('exit-reader').focus({preventScroll:true});
   }
+  function openMap() {
+    openReader(1);
+    magnification = minZoom();
+    layout();
+    viewport.scrollTo(0,0);
+  }
   function selected({side,panel}){
     const asset=side+'-'+panel, index=pages.findIndex(p=>p.panels.includes(asset));
     if(index>=0)openReader(index,pages[index].panels.indexOf(asset));
   }
-  const paper=window.createTrifold?.(byId('paper'),{initialStep:0,onChange:syncFold,onSelect:selected});
-  if(!paper){const img=new Image();img.src='assets/front-1.webp';img.alt='打开三折页';img.style.cssText='width:100%;height:100%;object-fit:contain;padding:20px;cursor:pointer';img.onclick=()=>openReader(0);byId('paper').appendChild(img);byId('flip').disabled=true;stepButtons.forEach(b=>b.disabled=true);}
+  const paper=window.createTrifold?.(byId('paper'),{initialStep:mapEntry?2:0,onChange:syncFold,onSelect:selected,panelSrc});
+  if(!paper){const img=new Image();img.src=panelSrc('front-1');img.alt='打开三折页';img.style.cssText='width:100%;height:100%;object-fit:contain;padding:20px;cursor:pointer';img.onclick=()=>openReader(0);byId('paper').appendChild(img);byId('flip').disabled=true;stepButtons.forEach(b=>b.disabled=true);}
   stepButtons.forEach((b,i)=>b.addEventListener('click',()=>paper?.setStep(i)));
   byId('flip').addEventListener('click',()=>paper?.flip());
   byId('read').addEventListener('click',()=>{
-    const start = foldState.step===0 ? (foldState.side==='front'?0:4) : (foldState.side==='front'?1:2);
-    openReader(start);
+    if (foldState.side === 'front') {
+      openMap();
+    } else {
+      openReader(foldState.step === 0 ? 4 : 2);
+    }
   });
+  if (mapEntry) openMap();
   byId('exit-reader').onclick=()=>reader.close();
   reader.addEventListener('close',()=>{
     resetPointers();document.body.style.overflow='';

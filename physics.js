@@ -71,7 +71,7 @@
         const index=side==='front'?i+1:3-i;
         const img=html('img','fp-print'+(sideIndex?' fp-verso':''),leaf);
         img.alt=''; img.draggable=false;img.decoding='async';
-        img.src=sourceRoot+'/'+side+'-'+index+'.webp';
+        img.src=options.panelSrc ? options.panelSrc(side+'-'+index) : sourceRoot+'/'+side+'-'+index+'.webp';
         return img;
       });
       const light=html('div','fp-light',leaf);
